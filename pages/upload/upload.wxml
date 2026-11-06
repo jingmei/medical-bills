@@ -1,0 +1,176 @@
+<view class="page">
+    <view class="tip-card">
+        <text class="tip-title">一次可拍多张，按编号分别识别</text>
+        <text class="tip-desc">同一类照片会存成一条记录；若选了不同类别，会自动分成多条记录。每张照片单独编号，可分别识别文字、提取标签、写备注。删除某张会一并清除它的识别结果与备注。</text>
+    </view>
+
+    <view class="card">
+        <view class="field-head">
+            <text class="field-label">单据照片（按添加顺序自动编号）</text>
+            <text class="field-hint">{{fileCount}}/{{maxImages}} 张</text>
+        </view>
+
+        <view class="grid">
+            <view class="grid-item {{activeKey === item.key ? 'is-active' : ''}}" wx:for="{{photos}}" wx:key="key" wx:for-item="item">
+                <image class="grid-img" src="{{item.tempFilePath}}" mode="aspectFill" data-src="{{item.tempFilePath}}" catchtap="previewTemp" />
+                <view class="grid-badge">照片{{item.photoNo}}</view>
+                <view class="grid-remove" data-key="{{item.key}}" catchtap="removePhoto"><text>×</text></view>
+                <view class="grid-select {{activeKey === item.key ? 'sel' : ''}}" data-key="{{item.key}}" catchtap="selectPhoto">
+                    <text>{{activeKey === item.key ? '编辑中' : '点此编辑'}}</text>
+                </view>
+            </view>
+            <view class="grid-add" wx:if="{{canAdd}}" catchtap="chooseImages">
+                <text class="add-plus">+</text>
+                <text class="add-text">拍照 / 相册</text>
+            </view>
+        </view>
+
+        <text class="field-desc">点缩略图放大；点「点此编辑」选中该张，再对它单独识别 / 写标签 / 写备注；点 × 删除这张照片及其识别结果与备注。</text>
+
+        <!-- 主路径：普通用户点一下就会自动识别并出标签（针对当前编辑的照片） -->
+        <view class="ocr-bar" wx:if="{{active}}">
+            <text class="ocr-active-label">正在编辑：照片{{active.photoNo}} · {{active.typeText}}</text>
+            <view class="ocr-btn {{ocrRunning || !ocrSupported ? 'is-disabled' : ''}}" catchtap="runOcr">
+                <text>{{ocrRunning ? '正在识别…' : '识别图中文字（本机自动）'}}</text>
+            </view>
+            <view class="ocr-stop" wx:if="{{ocrRunning}}" catchtap="stopOcr">
+                <text>停止识别</text>
+            </view>
+            <text class="ocr-note">{{ocrSupported ? '本机完成，不上传图片' : '当前微信版本不支持本机识别'}}</text>
+        </view>
+        <text class="manual-note" wx:if="{{active}}">若本机识别没出结果，可点开上方照片用手机本机识图，复制文字后填入下方粘贴框；两种方式都只在本机整理标签，不上传。</text>
+
+        <!-- 兜底路径：把已复制的图中文字粘进来，仍由本机规则自动提取标签 -->
+        <view class="manual-bar" wx:if="{{active}}">
+            <view class="manual-btn primary" catchtap="inputTextManually">
+                <text>{{manualOpen ? '收起文字输入框' : '识别不出来？粘贴图中文字，自动提取日期 / 标题 / 关键时间'}}</text>
+            </view>
+        </view>
+
+        <view class="manual-box" wx:if="{{manualOpen && active}}">
+            <text class="manual-label">操作步骤：点开照片{{active.photoNo}} → 两个手指分开长按识别 → 进入选词模式 → 点「全选」和「复制」→ 把文字粘贴到下面。文字只在本机整理成标签，不上传、不保存原文。</text>
+            <textarea class="manual-input" placeholder="粘贴整段文字即可，例如：预约告知书 2026-04-28 2:00 提前三天 1-3个月" value="{{manualText}}" bindinput="onManualInput" maxlength="2000" auto-height />
+            <view class="manual-actions">
+                <view class="manual-cancel" catchtap="clearManual">清空</view>
+                <view class="manual-submit" catchtap="submitManual">提取标签</view>
+            </view>
+        </view>
+
+        <view class="ocr-result" wx:if="{{active && (active.ocrTexts.length || active.ocrTags.length || active.ocrHint)}}">
+            <view class="ocr-result-head">
+                <text class="ocr-result-title">照片{{active.photoNo}} 识别结果与标签</text>
+                <text class="ocr-clear" catchtap="clearOcr">清空</text>
+            </view>
+            <text class="ocr-hint">{{active.ocrHint}}</text>
+            <text class="ocr-tag-note" wx:if="{{active.ocrTags.length}}">已提取 {{active.ocrTags.length}} 个标签，可在下方「这张的标签」里改字、删除或手动添加；点文字行也能加为标签。</text>
+            <button class="ocr-date-btn" wx:if="{{active.ocrDate}}" catchtap="useOcrDate">把图中日期 {{active.ocrDate}} 设为拍照日期</button>
+            <view class="ocr-lines" wx:if="{{active.ocrTexts.length}}">
+                <text class="ocr-line" wx:for="{{active.ocrTexts}}" wx:key="*this" data-line="{{item}}" catchtap="addTagFromLine">{{item}}<text class="ocr-line-add">＋ 标签</text></text>
+            </view>
+            <button class="ocr-fill" wx:if="{{active.ocrTexts.length}}" catchtap="fillNoteFromOcr">填入备注（可自行修改）</button>
+        </view>
+
+        <!-- 当前照片：类型 / 标签 / 备注（每张独立） -->
+        <view class="active-card" wx:if="{{active}}">
+            <text class="active-title">照片{{active.photoNo}} 的信息</text>
+
+            <view class="field">
+                <text class="field-label">类型</text>
+                <picker mode="selector" range="{{typeOptions}}" value="{{active.typeIndex}}" bindchange="onActiveTypeChange">
+                    <view class="picker-value">{{active.typeText}}</view>
+                </picker>
+                <text class="field-desc">类型名称可在「我的」页自行修改；不同照片可选不同类别，保存时会分别归档。</text>
+            </view>
+
+            <view class="field tag-field">
+                <text class="field-label">这张的标签</text>
+                <view class="tag-panel">
+                    <view class="tag-chip" wx:for="{{active.ocrTags}}" wx:key="*this">
+                        <text class="tag-chip-text" catchtap="editTag" data-tag="{{item}}">{{item}}</text>
+                        <text class="tag-chip-edit" catchtap="editTag" data-tag="{{item}}">✎</text>
+                        <text class="tag-chip-x" catchtap="removeOcrTag" data-tag="{{item}}">×</text>
+                    </view>
+                    <view class="tag-chip add" catchtap="openTagEditor">＋ 手动加标签</view>
+                </view>
+                <text class="field-desc">点标签文字或 ✎ 可改字，点 × 去掉，点 ＋ 自己写一个；与上方「关键字」实时同步。</text>
+                <view class="tag-editor" wx:if="{{tagEditorOpen}}">
+                    <text class="tag-editor-title">{{tagEditorTitle}}</text>
+                    <input class="tag-editor-input" placeholder="输入标签文字，最多 12 字" value="{{tagEditorText}}" bindinput="onTagEditorInput" maxlength="12" />
+                    <text class="tag-editor-hint" wx:if="{{tagEditorHint}}">{{tagEditorHint}}</text>
+                    <view class="tag-suggest" wx:if="{{tagSuggestions.length}}">
+                        <text class="tag-suggest-title">已有标签 · 按使用次数，点一下复用</text>
+                        <view class="tag-suggest-row">
+                            <text class="tag-suggest-chip" wx:for="{{tagSuggestions}}" wx:key="tag" wx:for-item="s" data-tag="{{s.tag}}" catchtap="tapTagSuggestion">{{s.label}} · {{s.count}}</text>
+                        </view>
+                    </view>
+                    <view class="tag-editor-actions">
+                        <view class="tag-editor-cancel" catchtap="closeTagEditor">取消</view>
+                        <view class="tag-editor-submit" catchtap="submitTagEditor">保存标签</view>
+                    </view>
+                </view>
+            </view>
+
+            <view class="field">
+                <text class="field-label">这张的备注</text>
+                <textarea class="field-textarea" placeholder="选填；把图片文字复制到这里，再点「从备注提取标签」也能自动出标签" value="{{active.note}}" bindinput="onActiveNoteInput" maxlength="200" />
+                <view class="note-extract" catchtap="extractTagsFromNote">
+                    <text>从备注提取标签</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view class="card form-card">
+        <view class="field">
+            <text class="field-label">拍照日期 <text class="required">*</text></text>
+            <picker mode="date" value="{{visitDate}}" bindchange="onDateChange">
+                <view class="picker-value">{{visitDate}}</view>
+            </picker>
+            <text class="field-desc">同一批照片共用一个拍照日期；如需不同日期，请分多批保存。</text>
+        </view>
+    </view>
+
+    <view class="save-mode" wx:if="{{saveModeHint}}">{{saveModeHint}}</view>
+
+    <text class="error-text" wx:if="{{formError}}">{{formError}}</text>
+
+    <view class="saved-card" wx:if="{{savedInfo}}">
+        <text class="saved-title">{{savedInfo}}</text>
+        <text class="saved-label">保存目录</text>
+        <text class="saved-path" catchtap="copySavedPath">{{savedDir}}</text>
+        <text class="saved-label">第一张照片路径（点击可复制）</text>
+        <text class="saved-path" catchtap="copySavedPath">{{savedPath}}</text>
+        <text class="saved-note">这是小程序私有目录，只在本机，手机相册与文件管理器看不到；到「单据」页即可查看和搜索。</text>
+        <view class="saved-actions">
+            <button class="saved-btn" catchtap="copySavedPath">复制路径</button>
+            <button class="saved-btn primary" catchtap="goRecords">查看单据</button>
+        </view>
+    </view>
+
+    <view class="privacy-link" catchtap="goPrivacy">
+        <text>查看完整隐私说明与免责声明 ›</text>
+    </view>
+
+    <view class="footer-note">
+        <text>本工具仅用于单据整理与检索，不提供任何专业意见，也不做数据分析</text>
+    </view>
+
+    <view class="build-row" catchtap="showDiagnostics">
+        <text class="build-stamp">{{envLine || '构建 B15 · 2026-11-06 10:29'}}</text>
+        <text class="build-action">环境自检 ›</text>
+    </view>
+
+    <!-- 吸底操作栏 -->
+    <view class="save-dock">
+        <view class="privacy-confirm" wx:if="{{needPrivacy}}">
+            <text class="privacy-confirm-text">首次保存前请确认：照片只保存在本机，不上传</text>
+            <button class="privacy-confirm-btn" catchtap="agreePrivacy">同意</button>
+        </view>
+        <text class="dock-hint" wx:if="{{saveHint}}">{{saveHint}}</text>
+        <text class="dock-hint idle" wx:elif="{{fileCount > 0}}">已选 {{fileCount}} 张照片，点下方按钮即可保存到本机</text>
+        <text class="dock-hint idle" wx:else>先添加单据照片，再保存到本机</text>
+        <view class="primary-btn dock-btn {{submitting ? 'busy' : ''}}" catchtap="save">
+            <text>{{submitting ? '正在保存…' : '保存到本机'}}</text>
+        </view>
+    </view>
+</view>

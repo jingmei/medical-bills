@@ -1,0 +1,56 @@
+<view class="page">
+    <view class="card intro">
+        <text class="intro-title">隐私说明与免责声明</text>
+        <text class="intro-sub">更新日期：{{updatedAt}}　·　版本 1.0.0（单机版）</text>
+        <text class="intro-body">「我的身体单据」是一个只做单据整理与检索的个人工具。这一版不使用云端账号与服务器，不会自动把资料传到任何服务器；只有你主动导出备份时，资料才会由你自己复制或发送出去。</text>
+    </view>
+
+    <view class="card section">
+        <text class="section-title">一、我们处理哪些信息</text>
+        <text class="section-body">仅处理你主动添加的内容：拍摄或从相册选择的单据照片，以及你填写的拍照日期、自定义关键字、类型、备注。类型名称可由你自行修改，以上信息全部只写本机。</text>
+        <text class="section-body">我们不采集微信昵称与头像、手机号、身份证号、通讯录、位置信息、设备标识；不做人脸识别、不做任何数据分析或统计画像。</text>
+        <text class="section-body">上传页可选的「识别图中文字」由微信本机能力完成，照片与识别结果不会离开这台手机，也不传给任何第三方；识别出的文字会自动整理成便于查找的标签（只做文字切分与日期格式化），标签可随时修改或删除。我们不做内容解读、语义分析或统计画像；识别一段时间无结果会自动结束，你仍可手动填写并保存。</text>
+        <text class="section-body">单据照片可能包含姓名等个人敏感信息，请你自行判断是否拍摄，必要时遮挡无关内容。</text>
+    </view>
+
+    <view class="card section">
+        <text class="section-title">二、权限使用</text>
+        <text class="section-body">相册与摄像头权限只在你点击「拍照 / 相册」时才会申请，用于选择或拍摄单据照片。你可以拒绝授权，拒绝后仅影响添加新照片，已有的单据仍可正常查看与检索。</text>
+    </view>
+
+    <view class="card section">
+        <text class="section-title">三、存储与共享</text>
+        <text class="section-body">记录与照片全部保存在本机微信小程序存储空间内，不上传服务器、不建立账号、不与任何第三方共享，也不会用于模型训练。</text>
+        <text class="section-body">「备份与恢复」由你主动操作：导出时把记录（可选含照片）整理成一段文本，由你自己复制到剪贴板、备忘录、文件传输助手或保存为文件；恢复时由你粘贴或选择自己保存的文件。本工具不会自动读取剪贴板、不会自动读取聊天记录、不会替你发送任何内容，也不保存备份副本。</text>
+        <text class="section-body">因此更换手机、清除微信数据、卸载小程序或手机丢失后，只有你之前导出并妥善保管的备份才能恢复；没有备份时无法从我们这里恢复，重要单据请另行留存纸质件。</text>
+    </view>
+
+    <view class="card section">
+        <text class="section-title">四、广告说明</text>
+        <text class="section-body">当前版本不展示广告。后续如接入微信官方「流量主」广告，广告由腾讯微信平台提供，仅展示在首页单据列表底部，不会出现在上传流程和单据详情页。</text>
+        <text class="section-body">你的单据内容与填写的备注不会用于广告定向，也不会提供给广告方。广告展示可能遵循微信平台自身的一般规则，具体以微信官方说明为准；接入时我们会同步更新本页说明。</text>
+    </view>
+
+    <view class="card section">
+        <text class="section-title">五、删除与注销</text>
+        <text class="section-body">在单据详情页可删除单条记录，「我的」页可一键清空全部记录与照片；删除后不可恢复。</text>
+        <text class="section-body">本工具没有账号体系，无需注册也没有注销流程，清空数据或卸载小程序即不再保留任何资料。</text>
+    </view>
+
+    <view class="card section">
+        <text class="section-title">六、免责声明</text>
+        <text class="section-body">本工具仅提供拍照归档与时间线检索，不提供任何专业意见或分析服务，也不替代纸质或电子原始凭证。</text>
+        <text class="section-body">归档内容由你自行录入，请核对准确性。因设备损坏、系统清理或保管不当造成的资料遗失，本工具不承担责任。涉及专业问题请咨询相关机构。</text>
+    </view>
+
+    <view class="card section">
+        <text class="section-title">七、更新与联系</text>
+        <text class="section-body">本说明如有更新，会在本页标注新日期。如需反馈问题，请通过小程序发布页展示的开发者信息联系，或在微信内使用官方反馈入口提交。</text>
+    </view>
+
+    <button class="ghost-btn back-btn" bindtap="goBack">我已了解</button>
+
+    <view class="footer-note">
+        <text>本工具不含任何第三方统计、追踪或广告 SDK</text>
+    </view>
+</view>

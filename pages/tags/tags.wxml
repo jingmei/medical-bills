@@ -1,0 +1,108 @@
+<view class="page">
+    <view class="head card">
+        <text class="head-title">标签管理</text>
+        <text class="head-sub">按使用次数复用已有标签；改名 / 合并会同步到所有记录。全部改动只保存在本机。</text>
+        <view class="stat-row">
+            <text class="stat">{{totalTags}} 个标签</text>
+            <text class="stat">{{recordsCount}} 条记录</text>
+            <text class="stat">置顶 {{pinnedCount}}</text>
+            <text class="stat">忽略 {{hiddenCount}}</text>
+        </view>
+    </view>
+
+    <view class="tool-card card">
+        <view class="search-row">
+            <input class="search-input" placeholder="搜索标签" value="{{query}}" bindinput="onQueryInput" maxlength="20" />
+            <text class="clear-btn" wx:if="{{query}}" catchtap="onClearQuery">清空</text>
+        </view>
+        <view class="sort-row">
+            <text class="sort-chip {{sortMode === item.key ? 'sort-chip-active' : ''}}" wx:for="{{sortModes}}" wx:key="key" wx:for-item="item" data-key="{{item.key}}" catchtap="onSortTap">{{item.label}}</text>
+        </view>
+    </view>
+
+    <view class="new-card card">
+        <view class="new-head">
+            <text class="new-title">新建 / 批量添加标签</text>
+            <text class="new-toggle" wx:if="{{!newTagOpen}}" catchtap="openNewTag">展开 ＋</text>
+            <text class="new-toggle" wx:else catchtap="closeNewTag">收起</text>
+        </view>
+        <block wx:if="{{newTagOpen}}">
+            <view class="new-input-row">
+                <input class="new-input" placeholder="输入标签文字，最多 12 字" value="{{newTagText}}" bindinput="onNewTagInput" maxlength="12" />
+                <view class="new-submit" catchtap="submitNewTag">下一步</view>
+            </view>
+            <text class="suggest-title">已有标签 · 按使用次数排，点一下复用</text>
+            <view class="suggest-row">
+                <text class="suggest-chip" wx:for="{{newSuggestions}}" wx:key="tag" wx:for-item="item" data-tag="{{item.tag}}" catchtap="tapSuggestion">{{item.label}} · {{item.count}}</text>
+                <text class="suggest-empty" wx:if="{{!newSuggestions.length}}">还没有可复用的标签</text>
+            </view>
+            <text class="tip">输入时会提示已有标签，优先复用可避免同一个意思出现多个标签；输入新词则创建新标签。</text>
+        </block>
+
+        <view class="pick-panel" wx:if="{{pickOpen}}">
+            <text class="pick-title">把「{{pickTag}}」加到哪些记录？已选 {{pickedCount}} 条</text>
+            <view class="pick-item" wx:for="{{pickItems}}" wx:key="id" wx:for-item="item" data-id="{{item.id}}" catchtap="togglePick">
+                <text class="pick-box" wx:if="{{item.has}}">已有</text>
+                <text class="pick-box" wx:elif="{{item.selected}}">☑</text>
+                <text class="pick-box" wx:else>☐</text>
+                <view class="pick-text">
+                    <text class="pick-date">{{item.date}}</text>
+                    <text class="pick-keyword">{{item.text}}</text>
+                </view>
+            </view>
+            <text class="no-record" wx:if="{{!pickItems.length}}">还没有记录，请先到「上传」页保存一张单据</text>
+            <view class="pick-actions">
+                <text class="pick-cancel" catchtap="closeNewTag">取消</text>
+                <text class="pick-confirm" catchtap="confirmPick">确认添加</text>
+            </view>
+        </view>
+        <text class="hint" wx:if="{{hint}}">{{hint}}</text>
+    </view>
+
+    <view class="state card" wx:if="{{viewState === 'loading'}}">
+        <text>正在读取本机标签…</text>
+    </view>
+    <view class="state card" wx:elif="{{viewState === 'error'}}">
+        <text>读取失败：{{hint}}</text>
+    </view>
+    <view class="state card" wx:elif="{{viewState === 'empty'}}">
+        <text>没有匹配的标签</text>
+        <text class="state-sub">换个搜索词，或先到「上传」页给单据加几个标签</text>
+    </view>
+    <block wx:else>
+        <view class="tag-item card" wx:for="{{tags}}" wx:key="tag" wx:for-item="item">
+            <view class="tag-head">
+                <text class="tag-name">{{item.label}}</text>
+                <text class="tag-num">{{item.count}} 条</text>
+            </view>
+            <text class="tag-meta">最近 {{item.latestText}}<text wx:if="{{item.pinned}}"> · 已置顶</text><text wx:if="{{item.hidden}}"> · 已忽略</text></text>
+            <view class="tag-actions">
+                <text data-tag="{{item.tag}}" data-action="rename" catchtap="onActionTap">改名</text>
+                <text data-tag="{{item.tag}}" data-action="merge" catchtap="onActionTap">合并</text>
+                <text data-tag="{{item.tag}}" data-action="delete" catchtap="onActionTap">删除</text>
+                <text data-tag="{{item.tag}}" data-action="pin" catchtap="onActionTap">{{item.pinLabel}}</text>
+                <text data-tag="{{item.tag}}" data-action="hide" catchtap="onActionTap">{{item.hideLabel}}</text>
+            </view>
+
+            <view class="action-panel" wx:if="{{expandedTag === item.tag}}">
+                <text class="action-title" wx:if="{{action === 'rename'}}">把「{{item.tag}}」改成：</text>
+                <text class="action-title" wx:elif="{{action === 'merge'}}">把「{{item.tag}}」合并到已有标签：</text>
+                <text class="action-title" wx:else>删除「{{item.tag}}」？只移除标签，记录与照片保留。</text>
+                <input class="action-input" wx:if="{{action === 'rename' || action === 'merge'}}" value="{{inputText}}" bindinput="onActionInput" maxlength="12" placeholder="输入标签文字" />
+                <view class="merge-list" wx:if="{{action === 'merge' && mergeList.length}}">
+                    <text class="merge-chip" wx:for="{{mergeList}}" wx:key="tag" wx:for-item="m" data-tag="{{m.tag}}" catchtap="tapMergeTarget">{{m.label}} · {{m.count}}</text>
+                </view>
+                <text class="hint" wx:if="{{hint}}">{{hint}}</text>
+                <view class="action-actions">
+                    <text class="action-cancel" catchtap="closeAction">取消</text>
+                    <text class="action-confirm" catchtap="confirmAction">{{confirmDelete ? '再点一次确认删除' : '确认'}}</text>
+                </view>
+            </view>
+        </view>
+    </block>
+
+    <view class="footer">
+        <text>置顶标签在首页优先显示，忽略标签不在首页出现。改名 / 合并 / 删除会同步修改所有相关记录的关键字。</text>
+        <text>参考 Stack Overflow 的标签词库与自动补全交互；本工具仅用于单据整理与检索，不提供任何专业意见。</text>
+    </view>
+</view>

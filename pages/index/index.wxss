@@ -1,0 +1,402 @@
+.hero {
+    box-sizing: border-box;
+    padding: 30rpx;
+    border-radius: 24rpx;
+    background: #ffffff;
+    border: 2rpx solid #e8edf5;
+}
+
+.hero-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-title {
+    font-size: 38rpx;
+    font-weight: 700;
+}
+
+.hero-sub {
+    margin-top: 10rpx;
+    color: #78859a;
+    font-size: 26rpx;
+}
+
+.stat-badge {
+    display: flex;
+    min-width: 130rpx;
+    padding: 14rpx 18rpx;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 18rpx;
+    background: #eef3fb;
+}
+
+.stat-num {
+    color: #2f6fed;
+    font-size: 40rpx;
+    font-weight: 700;
+}
+
+.stat-label {
+    margin-top: 2rpx;
+    color: #6b7890;
+    font-size: 22rpx;
+}
+
+.local-notice {
+    margin-top: 24rpx;
+    padding: 16rpx 20rpx;
+    border-radius: 14rpx;
+    background: #fff8e8;
+}
+
+.local-notice-text {
+    color: #9a6b15;
+    font-size: 24rpx;
+    line-height: 1.5;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-top: 24rpx;
+    padding: 0 22rpx;
+    height: 84rpx;
+    border: 2rpx solid #e8edf5;
+    border-radius: 18rpx;
+    background: #ffffff;
+}
+
+.search-input {
+    flex: 1;
+    font-size: 27rpx;
+}
+
+.clear-btn {
+    padding: 10rpx 0 10rpx 16rpx;
+    color: #2f6fed;
+    font-size: 26rpx;
+}
+
+/* 类型改为搜索栏右侧的原生 picker，日期独立成一张筛选卡 */
+.type-picker {
+    flex: none;
+    margin-left: 14rpx;
+    padding-left: 14rpx;
+    border-left: 2rpx solid #e8edf5;
+}
+
+.type-picker-inner {
+    display: flex;
+    align-items: center;
+    color: #2f6fed;
+    font-size: 25rpx;
+    white-space: nowrap;
+}
+
+.caret {
+    margin-left: 6rpx;
+    color: #8a94a6;
+    font-size: 22rpx;
+}
+
+.filter-card {
+    box-sizing: border-box;
+    margin-top: 20rpx;
+    padding: 20rpx 22rpx;
+    border: 2rpx solid #e8edf5;
+    border-radius: 18rpx;
+    background: #ffffff;
+}
+
+.filter-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-title {
+    color: #3a465c;
+    font-size: 26rpx;
+    font-weight: 600;
+}
+
+.filter-reset {
+    color: #2f6fed;
+    font-size: 24rpx;
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    margin-top: 16rpx;
+}
+
+.grain-chip {
+    flex: none;
+    margin-right: 10rpx;
+    padding: 8rpx 16rpx;
+    border: 2rpx solid #e4eaf3;
+    border-radius: 999rpx;
+    color: #62708a;
+    font-size: 23rpx;
+}
+
+.grain-chip-active {
+    border-color: #2f6fed;
+    background: #eaf2ff;
+    color: #2f6fed;
+    font-weight: 600;
+}
+
+.date-picker {
+    flex: 1;
+    min-width: 0;
+}
+
+.date-picker-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8rpx 12rpx;
+    border: 2rpx dashed #c9d6ea;
+    border-radius: 999rpx;
+    color: #2f6fed;
+    font-size: 23rpx;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.date-clear {
+    flex: none;
+    margin-left: 12rpx;
+    color: #8a94a6;
+    font-size: 24rpx;
+}
+
+.quick-bar {
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 16rpx;
+    white-space: nowrap;
+}
+
+.quick-chip {
+    display: inline-block;
+    margin-right: 12rpx;
+    padding: 8rpx 18rpx;
+    border-radius: 999rpx;
+    background: #f2f6fd;
+    color: #5b6b86;
+    font-size: 23rpx;
+}
+
+.quick-chip-active {
+    background: #2f6fed;
+    color: #ffffff;
+}
+
+.filter-hint {
+    display: block;
+    margin-top: 14rpx;
+    color: #9aa8bf;
+    font-size: 21rpx;
+    line-height: 1.5;
+}
+
+.filter-summary {
+    display: block;
+    margin-top: 10rpx;
+    color: #2f6fed;
+    font-size: 23rpx;
+}
+
+.chip-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 22rpx 8rpx 0;
+}
+
+.chip-label {
+    color: #6b7890;
+    font-size: 23rpx;
+}
+
+.chip-mode {
+    color: #2f6fed;
+    font-size: 23rpx;
+}
+
+.tag-bar {
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 14rpx;
+    white-space: nowrap;
+}
+
+.tag-chip {
+    display: inline-block;
+    margin-right: 14rpx;
+    padding: 12rpx 24rpx;
+    border: 2rpx solid #e4eaf3;
+    border-radius: 999rpx;
+    background: #ffffff;
+    color: #62708a;
+    font-size: 26rpx;
+}
+
+.tag-chip-active {
+    border-color: #2f6fed;
+    background: #2f6fed;
+    color: #ffffff;
+}
+
+.tag-count {
+    margin-left: 8rpx;
+    padding: 2rpx 10rpx;
+    border-radius: 999rpx;
+    background: #eef3fb;
+    color: #8a94a6;
+    font-size: 20rpx;
+}
+
+.tag-chip-active .tag-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+.tag-x {
+    margin-left: 8rpx;
+    font-size: 24rpx;
+}
+
+.tag-manage {
+    border-style: dashed;
+    color: #2f6fed;
+}
+
+.state-icon {
+    color: #9aa8bf;
+    font-size: 60rpx;
+}
+
+.retry-btn {
+    margin-top: 26rpx;
+    padding: 0 48rpx;
+}
+
+.date-group {
+    margin-top: 28rpx;
+}
+
+.group-label {
+    display: block;
+    margin: 0 8rpx 14rpx;
+    color: #6b7890;
+    font-size: 26rpx;
+    font-weight: 600;
+}
+
+.bill-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16rpx;
+    padding: 20rpx;
+    border: 2rpx solid #e8edf5;
+    border-radius: 20rpx;
+    background: #ffffff;
+}
+
+.bill-thumb {
+    flex: none;
+    width: 130rpx;
+    height: 130rpx;
+    border-radius: 14rpx;
+    background: #eef3fb;
+}
+
+.bill-thumb-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9aa8bf;
+    font-size: 24rpx;
+}
+
+.bill-main {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    margin-left: 20rpx;
+    flex-direction: column;
+}
+
+.bill-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.type-tag {
+    padding: 4rpx 14rpx;
+    border-radius: 8rpx;
+    background: #eaf2ff;
+    color: #2f6fed;
+    font-size: 22rpx;
+    font-weight: 600;
+}
+
+.bill-count {
+    color: #8a94a6;
+    font-size: 24rpx;
+}
+
+.bill-hospital {
+    margin-top: 10rpx;
+    overflow: hidden;
+    font-size: 30rpx;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bill-note {
+    margin-top: 6rpx;
+    overflow: hidden;
+    color: #78859a;
+    font-size: 25rpx;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bill-time {
+    margin-top: 8rpx;
+    color: #a0aabb;
+    font-size: 22rpx;
+}
+
+.bill-arrow {
+    margin-left: 8rpx;
+    color: #c0c8d6;
+    font-size: 44rpx;
+}
+
+.ad-slot {
+    margin-top: 36rpx;
+}
+
+.footer-note {
+    margin: 32rpx 8rpx 8rpx;
+    color: #9aa8bf;
+    font-size: 22rpx;
+    line-height: 1.6;
+    text-align: center;
+}

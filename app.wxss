@@ -1,0 +1,225 @@
+page {
+    min-height: 100%;
+    background: #f4f7fb;
+    color: #1f2329;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+
+button {
+    border-radius: 14rpx;
+}
+
+button::after {
+    border: none;
+}
+
+.page {
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding: 24rpx 28rpx 56rpx;
+}
+
+.card {
+    box-sizing: border-box;
+    padding: 28rpx;
+    border: 2rpx solid #e8edf5;
+    border-radius: 24rpx;
+    background: #ffffff;
+}
+
+.muted {
+    color: #78859a;
+    font-size: 26rpx;
+    line-height: 1.65;
+}
+
+.section-label {
+    margin: 32rpx 8rpx 16rpx;
+    color: #78859a;
+    font-size: 26rpx;
+    font-weight: 600;
+}
+
+.primary-btn {
+    background: #2f6fed;
+    color: #ffffff;
+    font-size: 30rpx;
+    font-weight: 600;
+}
+
+.ghost-btn {
+    background: #eef3fb;
+    color: #2f6fed;
+    font-size: 28rpx;
+}
+
+.danger-btn {
+    background: #fff1f0;
+    color: #d64545;
+    font-size: 28rpx;
+}
+
+.state-card {
+    box-sizing: border-box;
+    display: flex;
+    min-height: 320rpx;
+    padding: 40rpx;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border: 2rpx solid #e8edf5;
+    border-radius: 24rpx;
+    background: #ffffff;
+    text-align: center;
+}
+
+.state-title {
+    margin-top: 20rpx;
+    font-size: 34rpx;
+    font-weight: 600;
+}
+
+.state-desc {
+    margin-top: 12rpx;
+    color: #78859a;
+    font-size: 26rpx;
+    line-height: 1.6;
+}
+
+/* 检索标签面板：上传页与详情页编辑模式共用，标签 = 关键字的分词 */
+.tag-tip {
+    display: block;
+    margin: 4rpx 0 12rpx;
+    color: #9aa8bf;
+    font-size: 22rpx;
+    line-height: 1.5;
+}
+
+.tag-panel {
+    display: flex;
+    margin-top: 14rpx;
+    flex-wrap: wrap;
+}
+
+.tag-chip {
+    display: flex;
+    margin: 0 12rpx 12rpx 0;
+    padding: 8rpx 14rpx 8rpx 18rpx;
+    align-items: center;
+    border-radius: 999rpx;
+    background: #e5efff;
+    color: #2f6fed;
+    font-size: 24rpx;
+}
+
+.tag-chip-text {
+    max-width: 260rpx;
+}
+
+.tag-chip-edit,
+.tag-chip-x {
+    padding: 0 4rpx;
+    color: #7b93c4;
+    font-size: 24rpx;
+}
+
+.tag-chip-x {
+    font-size: 28rpx;
+}
+
+.tag-chip.add {
+    padding: 8rpx 20rpx;
+    border: 2rpx dashed #b9ccee;
+    background: #f7faff;
+    color: #2f6fed;
+}
+
+.tag-editor {
+    box-sizing: border-box;
+    margin-top: 12rpx;
+    padding: 20rpx;
+    border: 2rpx solid #dce7fb;
+    border-radius: 16rpx;
+    background: #f7faff;
+}
+
+.tag-editor-title {
+    display: block;
+    color: #3d5375;
+    font-size: 24rpx;
+    font-weight: 600;
+}
+
+.tag-editor-input {
+    box-sizing: border-box;
+    margin-top: 12rpx;
+    padding: 0 18rpx;
+    width: 100%;
+    height: 72rpx;
+    border: 2rpx solid #dce7fb;
+    border-radius: 12rpx;
+    background: #ffffff;
+    color: #1f2329;
+    font-size: 28rpx;
+}
+
+.tag-editor-hint {
+    display: block;
+    margin-top: 10rpx;
+    color: #b8751f;
+    font-size: 22rpx;
+}
+
+.tag-editor-actions {
+    display: flex;
+    margin-top: 16rpx;
+}
+
+.tag-editor-cancel,
+.tag-editor-submit {
+    flex: 1;
+    height: 64rpx;
+    line-height: 64rpx;
+    border-radius: 12rpx;
+    font-size: 26rpx;
+    text-align: center;
+}
+
+.tag-editor-cancel {
+    margin-right: 12rpx;
+    background: #eef3fb;
+    color: #6b7890;
+}
+
+.tag-editor-submit {
+    background: #2f6fed;
+    color: #ffffff;
+}
+
+/* 标签自动补全：输入时按出现次数提示已有标签，减少同义词 */
+.tag-suggest {
+    margin-top: 14rpx;
+    padding: 14rpx 0 4rpx;
+    border-top: 2rpx dashed #dce7fb;
+}
+
+.tag-suggest-title {
+    display: block;
+    color: #78859a;
+    font-size: 22rpx;
+}
+
+.tag-suggest-row {
+    display: flex;
+    margin-top: 10rpx;
+    flex-wrap: wrap;
+}
+
+.tag-suggest-chip {
+    margin: 0 12rpx 10rpx 0;
+    padding: 8rpx 16rpx;
+    border-radius: 999rpx;
+    background: #eef3fb;
+    color: #2f6fed;
+    font-size: 23rpx;
+}

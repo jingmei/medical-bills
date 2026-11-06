@@ -1,0 +1,74 @@
+<view class="page">
+    <view class="card intro">
+        <text class="intro-title">备份与恢复</text>
+        <text class="intro-desc">记录和照片只存在这台手机的小程序私有目录里。换手机、卸载小程序或清除微信数据前，请先导出备份；备份内容由你自己保管，本工具不上传服务器。</text>
+    </view>
+
+    <text class="section-label">一、导出备份</text>
+    <view class="card">
+        <text class="field-label">备份内容</text>
+        <view class="seg">
+            <view class="seg-item {{includeImages ? 'on' : ''}}" catchtap="setIncludeImages">含照片（完整）</view>
+            <view class="seg-item {{!includeImages ? 'on' : ''}}" catchtap="setTextOnly">仅文字（体积小）</view>
+        </view>
+        <text class="field-desc">含照片时备份文本会很长；「仅文字」恢复后记录还在，但看不到照片。</text>
+        <view class="btn-row">
+            <view class="act primary" catchtap="makeBackup">{{making ? '正在生成…' : '生成备份内容'}}</view>
+        </view>
+        <text class="status" wx:if="{{status}}">{{status}}</text>
+
+        <view class="result" wx:if="{{backupReady}}">
+            <text class="result-line">记录 {{exportSummary.records}} 条 · 照片 {{exportSummary.images}} 张（有图 {{exportSummary.withPhoto}} 张） · 约 {{sizeText}}</text>
+            <text class="status" wx:if="{{missing}}">有 {{missing}} 张照片读不到，已在备份里留空，其余内容正常</text>
+            <view class="btn-row">
+                <view class="act" catchtap="copyBackup">复制备份内容</view>
+                <view class="act" catchtap="shareBackupFile">导出为文件</view>
+            </view>
+            <text class="field-desc">复制后请粘贴到自己的备忘录、文件传输助手或电脑保存。「导出为文件」由你选择发给谁；若这个按钮没反应，请改用「复制备份内容」。</text>
+        </view>
+    </view>
+
+    <text class="section-label">二、恢复数据</text>
+    <view class="card">
+        <text class="field-label">粘贴备份内容</text>
+        <textarea wx:if="{{showPaste}}" class="paste" placeholder="把之前保存的备份内容整段粘贴到这里" bindinput="onImportInput" maxlength="-1" auto-height />
+        <text class="status">已输入 {{importLength}} 字</text>
+        <view class="btn-row">
+            <view class="act" catchtap="pickBackupFile">从微信聊天选备份文件</view>
+            <view class="act" catchtap="clearPaste">清空输入</view>
+        </view>
+
+        <text class="field-label">恢复方式</text>
+        <view class="seg">
+            <view class="seg-item {{mode === 'merge' ? 'on' : ''}}" catchtap="setMerge">合并（保留现有）</view>
+            <view class="seg-item {{mode === 'replace' ? 'on' : ''}}" catchtap="setReplace">覆盖（清掉现有）</view>
+        </view>
+        <text class="field-desc">合并按记录编号去重；覆盖会清掉手机上现在的全部记录，请先导出一份当前备份。</text>
+
+        <view class="btn-row">
+            <view class="act" catchtap="checkBackup">检查备份内容</view>
+        </view>
+        <text class="status" wx:if="{{restoreHint}}">{{restoreHint}}</text>
+
+        <view class="confirm-box" wx:if="{{restoreReady && !confirming}}">
+            <view class="act primary" catchtap="askRestore">确认恢复</view>
+        </view>
+        <view class="confirm-box" wx:if="{{confirming}}">
+            <text class="confirm-title">即将{{mode === 'replace' ? '覆盖' : '合并'}} {{restoreSummary.records}} 条记录、{{restoreSummary.withPhoto}} 张照片，请再确认一次</text>
+            <view class="btn-row">
+                <view class="act" catchtap="cancelRestore">取消</view>
+                <view class="act primary" catchtap="doRestore">{{restoring ? '正在写入…' : '确定写入'}}</view>
+            </view>
+        </view>
+    </view>
+
+    <view class="card desktop-card">
+        <text class="intro-title">建议把小程序添加到桌面</text>
+        <text class="intro-desc">安卓：点右上角「···」→「添加到桌面」；若没出现图标，需在手机系统设置里允许微信「创建桌面快捷方式」。iPhone：点右上角「···」→「添加到我的小程序」，之后从微信首页下拉就能快速进入。</text>
+        <text class="intro-desc">添加到桌面只方便打开，并不会备份数据，换手机前仍要先导出备份。</text>
+    </view>
+
+    <view class="footer-note">
+        <text>全程不联网、不上传服务器、不含第三方 SDK</text>
+    </view>
+</view>

@@ -1,0 +1,170 @@
+<view class="page">
+    <view class="state-card" wx:if="{{loading}}">
+        <text class="state-title">正在读取单据</text>
+        <text class="state-desc">请稍候…</text>
+    </view>
+
+    <view class="state-card" wx:elif="{{notFound}}">
+        <text class="state-icon">!</text>
+        <text class="state-title">找不到这条记录</text>
+        <text class="state-desc">它可能已被删除，返回列表再试一次。</text>
+    </view>
+
+    <block wx:else>
+        <view class="card">
+            <text class="detail-date">{{dateLabel}}</text>
+            <view class="detail-row">
+                <text class="type-tag">{{record.docType}}</text>
+                <text class="detail-count">{{imageCountText}}</text>
+            </view>
+
+            <block wx:if="{{!editing}}">
+                <view class="meta-line">
+                    <text class="meta-label">关键字</text>
+                    <text class="meta-value">{{record.keyword}}</text>
+                </view>
+                <view class="meta-line" wx:if="{{record.hasNote}}">
+                    <text class="meta-label">备注</text>
+                    <text class="meta-value">{{record.note}}</text>
+                </view>
+                <view class="meta-line">
+                    <text class="meta-label">存入时间</text>
+                    <text class="meta-value">{{createdText}}</text>
+                </view>
+                <view class="meta-line">
+                    <text class="meta-label">占用空间</text>
+                    <text class="meta-value">{{sizeText}}</text>
+                </view>
+                <view class="edit-entry" catchtap="startEdit">
+                    <text>编辑这条记录（关键字 / 拍照日期 / 类型 / 备注）</text>
+                </view>
+            </block>
+
+            <block wx:else>
+                <text class="edit-title">修改记录内容</text>
+                <text class="edit-label">拍照日期</text>
+                <picker mode="date" value="{{editDate}}" bindchange="onEditDateChange">
+                    <view class="edit-value">{{editDate}}</view>
+                </picker>
+                <text class="edit-label">关键字</text>
+                <input class="edit-input" placeholder="便于查找的词，多个词用空格分隔" value="{{editKeyword}}" bindinput="onEditKeywordInput" maxlength="80" />
+                <view class="tag-panel">
+                    <view class="tag-chip" wx:for="{{editTags}}" wx:key="*this">
+                        <text class="tag-chip-text" catchtap="editTag" data-tag="{{item}}">{{item}}</text>
+                        <text class="tag-chip-edit" catchtap="editTag" data-tag="{{item}}">✎</text>
+                        <text class="tag-chip-x" catchtap="removeEditTag" data-tag="{{item}}">×</text>
+                    </view>
+                    <view class="tag-chip add" catchtap="openTagEditor">＋ 手动加标签</view>
+                </view>
+                <text class="tag-tip">点标签文字或 ✎ 改字，点 × 去掉，点 ＋ 手动加；改动在「保存修改」后生效。</text>
+                <view class="tag-editor" wx:if="{{tagEditorOpen}}">
+                    <text class="tag-editor-title">{{tagEditorTitle}}</text>
+                    <input class="tag-editor-input" placeholder="输入标签文字，最多 12 字" value="{{tagEditorText}}" bindinput="onTagEditorInput" maxlength="12" />
+                    <text class="tag-editor-hint" wx:if="{{tagEditorHint}}">{{tagEditorHint}}</text>
+                    <view class="tag-suggest" wx:if="{{tagSuggestions.length}}">
+                        <text class="tag-suggest-title">已有标签 · 按使用次数，点一下复用</text>
+                        <view class="tag-suggest-row">
+                            <text class="tag-suggest-chip" wx:for="{{tagSuggestions}}" wx:key="tag" wx:for-item="s" data-tag="{{s.tag}}" catchtap="tapTagSuggestion">{{s.label}} · {{s.count}}</text>
+                        </view>
+                    </view>
+                    <view class="tag-editor-actions">
+                        <view class="tag-editor-cancel" catchtap="closeTagEditor">取消</view>
+                        <view class="tag-editor-submit" catchtap="submitTagEditor">保存标签</view>
+                    </view>
+                </view>
+                <text class="edit-label">类型</text>
+                <picker mode="selector" range="{{typeOptions}}" value="{{editTypeIndex}}" bindchange="onEditTypeChange">
+                    <view class="edit-value">{{editTypeText}}</view>
+                </picker>
+                <text class="edit-label">备注</text>
+                <textarea class="edit-textarea" placeholder="选填" value="{{editNote}}" bindinput="onEditNoteInput" maxlength="200" auto-height />
+                <view class="edit-clear" catchtap="clearEditNote">
+                    <text>清空备注</text>
+                </view>
+                <text class="edit-hint" wx:if="{{editHint}}">{{editHint}}</text>
+                <view class="edit-actions">
+                    <view class="edit-btn cancel" catchtap="cancelEdit">
+                        <text>取消</text>
+                    </view>
+                    <view class="edit-btn confirm {{saving ? 'busy' : ''}}" catchtap="saveEdit">
+                        <text>{{saving ? '正在保存…' : '保存修改'}}</text>
+                    </view>
+                </view>
+            </block>
+        </view>
+
+        <text class="section-label">单据照片（点开可放大）</text>
+        <view class="photo-grid">
+            <view class="photo-item" wx:for="{{images}}" wx:key="path" wx:for-item="img" wx:for-index="idx">
+                <image class="photo" src="{{img.path}}" mode="aspectFill" data-src="{{img.path}}" bindtap="preview" />
+                <view class="photo-badge" wx:if="{{hasItems && itemsView[idx]}}">照片{{itemsView[idx].photoNo}}</view>
+            </view>
+        </view>
+
+        <block wx:if="{{hasItems}}">
+            <text class="section-label">每张照片的标签与备注</text>
+            <view class="item-card" wx:for="{{itemsView}}" wx:key="photoNo" wx:for-item="it" wx:for-index="idx">
+                <view class="item-head">
+                    <text class="item-no">照片{{it.photoNo}}</text>
+                    <view class="item-tags" wx:if="{{it.hasTags}}">
+                        <text class="item-tag" wx:for="{{it.tags}}" wx:key="*this" wx:for-item="t">{{t}}</text>
+                    </view>
+                    <text class="item-notag" wx:else>无标签</text>
+                </view>
+                <text class="item-note" wx:if="{{it.hasNote}}">{{it.note}}</text>
+
+                <view class="item-actions" wx:if="{{!editing && (!itemEditOpen || itemEditIndex !== idx)}}">
+                    <view class="item-btn" catchtap="editItem" data-idx="{{idx}}">编辑这张</view>
+                    <view class="item-btn ghost" catchtap="reOcrItem" data-idx="{{idx}}">重新识别这张</view>
+                </view>
+
+                <block wx:if="{{itemEditOpen && itemEditIndex === idx}}">
+                    <text class="edit-label">这张的标签（多个词用空格分隔）</text>
+                    <input class="edit-input" placeholder="便于查找的词，空格分隔" value="{{itemEditKeyword}}" bindinput="onItemKeywordInput" maxlength="80" />
+                    <view class="tag-panel">
+                        <view class="tag-chip" wx:for="{{itemEditTags}}" wx:key="*this" wx:for-item="t">
+                            <text class="tag-chip-text" catchtap="itemTag" data-tag="{{t}}">{{t}}</text>
+                            <text class="tag-chip-edit" catchtap="itemTag" data-tag="{{t}}">✎</text>
+                            <text class="tag-chip-x" catchtap="removeItemTag" data-tag="{{t}}">×</text>
+                        </view>
+                        <view class="tag-chip add" catchtap="openItemTagEditor">＋ 手动加标签</view>
+                    </view>
+                    <text class="tag-tip">点标签文字或 ✎ 改字，点 × 去掉，点 ＋ 手动加。</text>
+                    <view class="tag-editor" wx:if="{{itemTagEditorOpen}}">
+                        <text class="tag-editor-title">{{itemTagEditorTitle}}</text>
+                        <input class="tag-editor-input" placeholder="输入标签文字，最多 12 字" value="{{itemTagEditorText}}" bindinput="onItemTagEditorInput" maxlength="12" />
+                        <text class="tag-editor-hint" wx:if="{{itemTagEditorHint}}">{{itemTagEditorHint}}</text>
+                        <view class="tag-suggest" wx:if="{{itemTagSuggestions.length}}">
+                            <text class="tag-suggest-title">已有标签 · 按使用次数，点一下复用</text>
+                            <view class="tag-suggest-row">
+                                <text class="tag-suggest-chip" wx:for="{{itemTagSuggestions}}" wx:key="tag" wx:for-item="s" data-tag="{{s.tag}}" catchtap="tapItemTagSuggestion">{{s.label}} · {{s.count}}</text>
+                            </view>
+                        </view>
+                        <view class="tag-editor-actions">
+                            <view class="tag-editor-cancel" catchtap="closeItemTagEditor">取消</view>
+                            <view class="tag-editor-submit" catchtap="submitItemTagEditor">保存标签</view>
+                        </view>
+                    </view>
+                    <text class="edit-label">这张的备注</text>
+                    <textarea class="edit-textarea" placeholder="选填；把图片里的文字复制到这里，再点「从备注提取标签」也能自动出标签" value="{{itemEditNote}}" bindinput="onItemNoteInput" maxlength="200" auto-height />
+                    <view class="item-note-extract" catchtap="extractTagsFromNote">
+                        <text>从备注提取标签</text>
+                    </view>
+                    <view class="item-ocr-hint" wx:if="{{itemOcrRunning}}">正在识别这张照片…</view>
+                    <view class="item-ocr-hint ok" wx:elif="{{itemOcrHint}}">{{itemOcrHint}}</view>
+                    <text class="edit-hint" wx:if="{{itemEditHint}}">{{itemEditHint}}</text>
+                    <view class="edit-actions">
+                        <view class="edit-btn cancel" catchtap="cancelItemEdit">取消</view>
+                        <view class="edit-btn confirm" catchtap="saveItemEdit">保存这张</view>
+                    </view>
+                </block>
+            </view>
+        </block>
+
+        <button class="danger-btn delete-btn" bindtap="remove">删除这条记录</button>
+
+        <view class="footer-note">
+            <text>本页面不展示广告。单据内容仅你本人可见。</text>
+        </view>
+    </block>
+</view>

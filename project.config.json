@@ -1,0 +1,78 @@
+{
+  "description": "个人身体单据收纳与检索工具（原生微信小程序）",
+  "packOptions": {
+    "ignore": [
+      {
+        "value": ".workbuddy",
+        "type": "folder"
+      },
+      {
+        "value": "docs",
+        "type": "folder"
+      },
+      {
+        "value": "assets",
+        "type": "folder"
+      },
+      {
+        "value": "tools",
+        "type": "folder"
+      },
+      {
+        "value": "versions",
+        "type": "folder"
+      },
+      {
+        "value": "README.md",
+        "type": "file"
+      },
+      {
+        "value": "base.png",
+        "type": "file"
+      },
+      {
+        "value": "qrcode.png",
+        "type": "file"
+      },
+      {
+        "value": "docs/private.touristappid.key",
+        "type": "file"
+      },
+      {
+        "value": "docs/ICp.pdf",
+        "type": "file"
+      }
+    ],
+    "include": []
+  },
+  "setting": {
+    "bundle": false,
+    "es6": true,
+    "minified": true,
+    "postcss": true,
+    "urlCheck": true,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "enhance": false,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "medical-bills",
+  "miniprogramRoot": "./",
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {}
+}

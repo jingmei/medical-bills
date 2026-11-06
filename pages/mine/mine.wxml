@@ -1,0 +1,97 @@
+<view class="page">
+    <view class="card profile">
+        <view class="avatar">
+            <text>夹</text>
+        </view>
+        <view class="profile-text">
+            <text class="profile-title">我的身体单据</text>
+            <text class="profile-sub">个人单据收纳与检索工具</text>
+        </view>
+    </view>
+
+    <view class="card stat-card">
+        <view class="stat-item">
+            <text class="stat-value">{{records}}</text>
+            <text class="stat-name">条记录</text>
+        </view>
+        <view class="stat-item">
+            <text class="stat-value">{{images}}</text>
+            <text class="stat-name">张照片</text>
+        </view>
+        <view class="stat-item">
+            <text class="stat-value">{{sizeText}}</text>
+            <text class="stat-name">占用空间</text>
+        </view>
+    </view>
+
+    <text class="section-label">数据存储</text>
+    <view class="card">
+        <view class="info-row">
+            <text class="info-dot">•</text>
+            <text class="info-text">当前为单机版：全部记录和照片只保存在这台手机的微信里。</text>
+        </view>
+        <view class="info-row">
+            <text class="info-dot">•</text>
+            <text class="info-text">不上传服务器，不采集微信昵称、头像、手机号、位置，也不与第三方共享。</text>
+        </view>
+        <view class="info-row">
+            <text class="info-dot">•</text>
+            <text class="info-text">换手机、清除微信数据或卸载小程序前，请先在「备份与恢复」里导出备份；没有备份时数据无法恢复。</text>
+        </view>
+        <view class="info-row">
+            <text class="info-dot">•</text>
+            <text class="info-text">记录日期范围：{{rangeText}}</text>
+        </view>
+    </view>
+
+    <view class="card home-tip">
+        <text class="home-tip-title">建议把小程序添加到桌面</text>
+        <text class="home-tip-text">安卓：点右上角「···」→「添加到桌面」；若桌面没出现图标，需在手机系统设置里允许微信「创建桌面快捷方式」。</text>
+        <text class="home-tip-text">iPhone：点右上角「···」→「添加到我的小程序」，之后从微信首页下拉即可快速进入。</text>
+        <text class="home-tip-text">添加到桌面只方便打开，并不会备份数据；换手机前仍要先导出备份。</text>
+    </view>
+
+    <text class="section-label">功能</text>
+    <view class="card menu">
+        <view class="menu-row" bindtap="goUpload">
+            <text>上传新单据</text>
+            <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-row" bindtap="toggleLabelEditor">
+            <text>自定义类型名称</text>
+            <text class="menu-arrow">{{showLabelEditor ? '收起' : '›'}}</text>
+        </view>
+        <view class="menu-row" bindtap="goTags">
+            <text>标签管理（改名 / 合并 / 批量添加）</text>
+            <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-row" bindtap="goBackup">
+            <text>备份与恢复（换手机前请先导出）</text>
+            <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-row" bindtap="goPrivacy">
+            <text>隐私说明与免责声明</text>
+            <text class="menu-arrow">›</text>
+        </view>
+    </view>
+
+    <view class="card label-editor" wx:if="{{showLabelEditor}}">
+        <text class="editor-tip">名称只保存在本机。修改后列表、筛选和上传页会同步更新，已有记录不会丢失。</text>
+        <view class="label-row" wx:for="{{labelItems}}" wx:key="key" wx:for-item="item">
+            <text class="label-default">{{item.defaultLabel}}</text>
+            <input class="label-input" value="{{item.label}}" data-key="{{item.key}}" data-index="{{index}}" bindinput="onLabelInput" maxlength="8" placeholder="输入名称" />
+        </view>
+        <text class="label-error" wx:if="{{labelError}}">{{labelError}}</text>
+        <view class="editor-actions">
+            <button class="ghost-btn" bindtap="resetLabels">恢复默认</button>
+            <button class="primary-btn" bindtap="saveLabels">保存名称</button>
+        </view>
+    </view>
+
+    <text class="section-label">数据管理</text>
+    <button class="danger-btn clear-btn" bindtap="clearAll" loading="{{clearing}}" disabled="{{clearing}}">清空全部数据</button>
+
+    <view class="footer-note">
+        <text>版本 1.0.0 · 构建 B15 · 仅做单据整理与检索</text>
+    </view>
+</view>

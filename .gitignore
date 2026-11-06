@@ -1,0 +1,12 @@
+# 微信开发者工具 / 本机环境
+project.private.config.json
+*.key
+.wbapp_*
+.workbuddy/
+
+# 版本快照（本地发布产物，不入库）
+versions/
+
+# 系统与编辑器
+Thumbs.db
+.DS_Store

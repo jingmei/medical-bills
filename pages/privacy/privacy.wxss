@@ -1,0 +1,52 @@
+.intro {
+    background: #eaf2ff;
+    border-color: #dbe7ff;
+}
+
+.intro-title {
+    font-size: 34rpx;
+    font-weight: 700;
+}
+
+.intro-sub {
+    display: block;
+    margin-top: 12rpx;
+    color: #5b6f9c;
+    font-size: 24rpx;
+}
+
+.intro-body {
+    display: block;
+    margin-top: 18rpx;
+    color: #42567f;
+    font-size: 27rpx;
+    line-height: 1.7;
+}
+
+.section {
+    margin-top: 24rpx;
+}
+
+.section-title {
+    font-size: 29rpx;
+    font-weight: 700;
+}
+
+.section-body {
+    display: block;
+    margin-top: 14rpx;
+    color: #4a5568;
+    font-size: 26rpx;
+    line-height: 1.75;
+}
+
+.back-btn {
+    margin-top: 32rpx;
+}
+
+.footer-note {
+    margin: 30rpx 8rpx 8rpx;
+    color: #9aa8bf;
+    font-size: 22rpx;
+    text-align: center;
+}
