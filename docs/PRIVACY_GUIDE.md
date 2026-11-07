@@ -5,20 +5,32 @@
 
 ## 一、代码实际触发的隐私能力
 
-| 代码调用 | 对应 `privacy_key` | 用途文案（建议原文照抄） | 是否必须 |
+> ⚠️ **2026-11-07 更正**：本表此前只列了「选中的照片或视频信息」，并误判 `wx.setClipboardData` / `wx.chooseMessageFile` / `wx.createVKSession` 不需要申报。对照微信官方《小程序用户隐私保护指引内容介绍》（最后编辑 2026-07-28）的「隐私接口 ↔ 处理的信息」映射表，**代码实际调用了 4 类隐私接口，必须逐项申报**。官方原文：「仅有在指引中声明所处理的用户信息，才可以调用平台提供的对应接口或组件。若未声明，对应接口或组件将直接禁用。」漏报时真机报 `errno: 112 / api scope is not declared in the privacy agreement`。
+
+| 代码调用 | 官方「处理的信息」 | 用途文案（建议原文照抄） | 是否必须 |
 |---|---|---|---|
-| `wx.chooseMedia`（`pages/upload/upload.js`，相册多选 / 拍照） | `Album`（选中的照片或视频信息） | `拍摄或从相册选择要归档的单据照片` | ✅ 必须 |
+| `wx.chooseMedia`（`pages/upload/upload.js`） | 收集你选中的照片或视频信息 | `拍摄或从相册选择要归档的单据照片` | ✅ 必须 |
+| `wx.chooseMessageFile`（`pages/backup/backup.js`） | 收集你选中的文件 | `选择你自行保存的备份文件恢复记录` | ✅ 必须 |
+| `wx.setClipboardData`（`pages/backup/backup.js`、`pages/upload/upload.js`） | 读取你的剪切板 | `把备份文本复制到剪贴板供你自行粘贴保存` | ✅ 必须 |
+| `wx.createVKSession`（`utils/ocr.js` 端侧 VisionKit OCR） | 访问你的摄像头 | `在本机识别单据图片中的文字` | ✅ 必须 |
+
+`wx.shareFileMessage`（备份发送）在官方映射表中**未列为采集项**（属于用户点选接收方的发送行为）；若提审表单仍单独提示，按表单实际情况如实填写即可。
 
 说明：
 
-- `wx.chooseMedia` 在微信官方「隐私接口 ↔ 处理的信息」映射里归 `Album`。若发布表单对"拍照"单独提示摄像头相关项，按表单实际提示补充勾选，**但不要为了保险把无关能力全部勾上**——每一个额外声明都是审核时需要解释的隐私主张。
+- 官方映射表把 `wx.setClipboardData` 与 `wx.getClipboardData` 一并归到「读取你的剪切板」。即使本项目只是**写入**、不读取，也按官方归类申报——**平台规则以微信官方最新文档为准，不要用语义直觉替代官方分类**。
+- `wx.createVKSession` 官方归到「访问你的摄像头」，虽然本项目拿它做静态图片 OCR、不打开摄像头预览，同样按官方归类申报。
+- **申报在哪里生效**：真正生效的是发布流程弹出的微信官方《用户隐私保护指引》表单。该表单会根据小程序版本的隐私接口调用情况展示必填项，按上表逐项填写用途即可；**key 名以表单实际提示为准，不要猜、不要在代码里硬写**。
 - 用途文案写的是"目的"，小程序会渲染成「为了{文案}」。不要以「为了 / 用于」开头，也不要写「获取相册权限」这种复述能力的话。
+- **不要为了保险把无关能力全部勾上**——每一个额外声明都是审核时需要解释的隐私主张；但也绝不能勾「未采集隐私」，否则官方会回收所有隐私接口调用权限（`A:fail appid privacy api banned`）。
+- 官方隐私授权弹窗由平台在调用隐私接口时自动展示（2023-10-17 后默认启用），**无需自研弹窗**；小程序内的隐私政策页仍需保留。
 
 ## 二、代码中确认**没有**使用（不要申报）
 
 - 无 `wx.getLocation` / `wx.chooseLocation` → 不申报 `Location` / `ChooseLocation`
 - 无头像昵称组件、无 `getPhoneNumber` → 不申报 `UserInfo` / `PhoneNumber`
-- 无 `wx.chooseMessageFile`、无剪贴板、无通讯录、无日历、无蓝牙、无微信运动 → 不申报对应项
+- 无通讯录、无日历、无蓝牙、无微信运动 → 不申报对应项
+- ⚠️ 已更正：`wx.chooseMessageFile`、剪贴板（`wx.setClipboardData`）、`wx.createVKSession` **代码里都有调用，必须申报**，见上表，不要再按"无"处理
 - 无 `wx.chooseInvoice` / `wx.chooseAddress` → 不申报 `Invoice` / `Address`
 - 不采集身份证号、手机号、邮箱字段 → 不申报 `EXIDNumber` / `PhoneNumber` / `Email`
 - 记录是**仅本人可见的私人档案**，不是公开发布内容 → 不按 `EXUserPublishContent` 申报
